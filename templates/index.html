@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MOOCs System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body class="home-body">
+
+<div class="home-container">
+
+    <!-- LEFT CONTENT -->
+    <div class="home-text">
+        <h1> MOOCs Management System</h1>
+        <p>
+            A smart platform to manage course registrations, 
+            track progress, and simplify certificate verification.
+        </p>
+
+        <div class="home-buttons">
+            <a href="/student_login">
+                <button class="primary-btn"> Student Login</button>
+            </a>
+
+            <a href="/admin">
+                <button class="secondary-btn"> Admin Login</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE (IMAGE) -->
+    <div class="home-image">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
+    </div>
+
+</div>
+
+</body>
+</html>

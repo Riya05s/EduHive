@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Profile</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(120deg, #4facfe, #00f2fe);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+      }
+
+      .profile-card {
+        background: white;
+        padding: 30px;
+        width: 380px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      }
+
+      .profile-card h2 {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      .profile-info {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .label {
+        font-weight: bold;
+        color: #555;
+      }
+
+      .value {
+        margin-top: 3px;
+        font-size: 16px;
+      }
+
+      .btn {
+        margin-top: 20px;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        background: #4facfe;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background: #00c6ff;
+      }
+
+      .link {
+        text-align: center;
+        margin-top: 15px;
+      }
+
+      .link a {
+        color: #4facfe;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="profile-card">
+      <h2>Admin Profile</h2>
+
+      <div class="profile-info">
+        <div class="label">Username</div>
+        <div class="value">{{ admin['username'] }}</div>
+      </div>
+
+      <div class="profile-info">
+        <div class="label">Admin ID</div>
+        <div class="value">{{ admin['id'] }}</div>
+      </div>
+
+      <div class="profile-info">
+        <div class="label">Section</div>
+        <div class="value">{{ admin['section'] }}</div>
+      </div>
+
+      <div class="link">
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+  </body>
+</html>

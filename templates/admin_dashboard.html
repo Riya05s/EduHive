@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Styling for alignment within cards */
+        .card form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group label {
+            flex: 1;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            flex: 2;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-pill {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .approved { color: #28a745; }
+        .rejected { color: #dc3545; }
+        .pending { color: #ffc107; }
+    </style>
+</head>
+<body>
+
+<div class="layout">
+
+    <div class="sidebar">
+        <h2>MOOC</h2>
+        <a href="/admin_dashboard">Dashboard</a>
+        <a href="/admin_profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="main">
+
+        <div class="topbar">
+            <h2>Admin Dashboard</h2>
+        </div>
+        {% if session_data %}
+            {% if session_data[1] == 1 %}
+                <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #c3e6cb;">
+                    <strong>Success:</strong> Registration session is currently <b>Active</b>.
+                </div>
+            {% else %}
+                <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; margin-bottom: 10px; border: 1px solid #ffeeba;">
+                    <strong>Status:</strong> Registration session is currently <b>Closed</b>.
+                </div>
+            {% endif %}
+        {% endif %}
+        <div class="card">
+            <h3>Session Control (Auto-Approval Rules)</h3>
+            <form method="POST" action="/start_session">
+                <div class="form-group">
+                    <label>Deadline:</label>
+                    <input type="date" name="deadline" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Required Domain:</label>
+                    <input type="text" name="domain" placeholder="e.g. CSE" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Min Duration (Weeks):</label>
+                    <input type="number" name="min_duration" placeholder="e.g. 8" required>
+                </div>
+
+                <div>
+                    <p style="margin-bottom: 8px; font-weight: bold;">Allowed Platforms:</p>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="platforms" value="NPTEL"> NPTEL</label>
+                        <label><input type="checkbox" name="platforms" value="SWAYAM"> SWAYAM</label>
+                        <label><input type="checkbox" name="platforms" value="Coursera"> Coursera</label>
+                    </div>
+                </div>
+
+                <button type="submit" style="background-color: #28a745; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px;">
+                    Set Rules & Start Session
+                </button>
+            </form>
+
+            <hr style="margin: 20px 0;">
+
+            <form method="POST" action="/end_session">
+                <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; border-radius: 4px;">
+                    End Current Session
+                </button>
+            </form>
+        </div>
+
+        <div class="card">
+    <h3>New Course Requests (Pending Review)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Course Details</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in courses if course[6] == 'pending' %}
+            <tr>
+                <td>{{course[9]}}</td>
+                <td>
+                    <strong>{{course[2]}}</strong><br>
+                    <small>{{course[3]}} weeks | {{course[4]}} | {{course[5]}}</small>
+                </td>
+                <td><span class="status-pill pending">{{course[6]}}</span></td>
+                <td>
+                    <form method="POST" action="/update_status/{{course[0]}}" style="display: flex; gap: 5px;">
+                        <select name="status" required style="padding: 5px;">
+                            <option value="Approved">Approve</option>
+                            <option value="Rejected">Reject</option>
+                        </select>
+                        <input type="text" name="reason" placeholder="Reason (e.g., Wrong Domain)" required style="padding: 5px; flex: 1;"> 
+                        <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                            Submit
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+        <div class="card">
+            <h3>Weekly Progress Grading</h3>
+            <table>
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th>Student & Course</th>
+                        <th>Week</th>
+                        <th>Content Update</th>
+                        <th>Marks for this Week</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for update in updates %}
+                    <tr>
+                        <td>
+                            <strong>{{ update[5] }}</strong><br>
+                            <small style="color: #666;">Course ID: {{ update[1] }}</small>
+                        </td>
+                        <td>Week {{ update[2] }}</td>
+                        <td style="max-width: 300px;">{{ update[3] }}</td>
+                        <td>
+                            <form method="POST" action="/grade_update/{{ update[0] }}" style="flex-direction: row; gap: 5px;">
+                                <input type="number" name="marks" value="{{ update[4] }}" style="width: 60px; padding: 5px;">
+                                <button type="submit" style="background-color: #17a2b8; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                                    Save
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>Course Marks Summary (Total)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Course Name</th>
+                        <th>Status</th>
+                        <th>Total Marks (All Weeks)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td>{{course[9]}}</td>
+                        <td>{{course[2]}}</td>
+                        <td class="{{ 'approved' if course[6]=='Approved' else 'rejected' if course[6]=='Rejected' else 'pending' }}">
+                            {{course[6]}}
+                        </td>
+                        <td style="font-weight: bold; color: #28a745;">{{course[8]}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
