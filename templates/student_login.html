@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="login-body">
+
+<div class="login-box">
+
+    <h2 class="login-title"> Student Login</h2>
+    <p class="subtitle">Welcome back! Please login</p>
+
+    <form method="POST">
+        <input type="text" name="username" placeholder="Enter Email" required>
+        <input type="password" name="password" placeholder="Enter Password" required>
+
+        <button type="submit" class="primary-btn">Login</button>
+    </form>
+
+    <div class="divider"></div>
+
+    <a href="/register">
+        <button class="secondary-btn"> Register</button>
+    </a>
+
+    <a href="/admin">
+        <button class="secondary-btn "> Admin Login</button>
+    </a>
+
+</div>
+
+</body>
+</html>
